@@ -732,4 +732,6 @@ TEST(GetMaxMinLineData)
     CHECK(data.size() == 0);
 
     GetMaxMinLineData(data, "linie.bin", 1, 800, 600, 0, 0);
+
+    CHECK(data.size() > 0);
 }
