@@ -156,6 +156,17 @@ public:
 	//Zwraca 1 jezeli obiekt jest w obszarze zaznaczenia
 	//cross jezeli 0 sprawdza czy caly obiekt jest w srodku 
 	//jezeli 1 czy dowolna czesc jest w srodku
+	virtual bool IsIn(const T& line, float x1, float y1, float x2, float y2, bool cross) = 0;
+
+	bool IsIn(const T& line, TMaxMinOb m, bool cross)
+	{
+		return IsIn(line, m.minx, m.miny, m.maxx, m.maxy, cross);
+	}
+
+	//
+	//Zwraca 1 jezeli obiekt jest w obszarze zaznaczenia
+	//cross jezeli 0 sprawdza czy caly obiekt jest w srodku 
+	//jezeli 1 czy dowolna czesc jest w srodku
 	virtual std::vector<T> GetIn(float x1,float y1,float x2,float y2, bool cross = 0) = 0;
 
 	//

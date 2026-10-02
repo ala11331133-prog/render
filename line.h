@@ -155,6 +155,17 @@ public:
 
 	//
 	//Zwraca 1 jezeli obiekt przechodci przez obszar zaznaczenia
+	bool IsCross(const TLine& line, float x1, float y1, float x2, float y2);
+
+	//
+	//Zwraca 1 jezeli obiekt jest w obszarze zaznaczenia
+	//cross jezeli 0 sprawdza czy caly obiekt jest w srodku 
+	//jezeli 1 czy dowolna czesc jest w srodku
+	using obiekt<TLine>::IsIn;
+	bool IsIn(const TLine& line, float x1, float y1, float x2, float y2, bool cross);
+
+	//
+	//Zwraca 1 jezeli obiekt przechodci przez obszar zaznaczenia
 	std::vector<TLine> GetCross(float x1, float y1, float x2, float y2);
 
 	//

@@ -1,4 +1,4 @@
-//
+﻿//
 //Klasa obslugujaca obiekty typu linie w plikach wektorowych
 //Dolaczona jako czasc skladowa klasy wektor
 //
@@ -6,7 +6,7 @@
 #include <math.h>
 #include <algorithm>
 #include "line.h"
-#include "test.h"
+#include "test.hpp"
 
 TLineC::TLineC(void)
 {
@@ -379,87 +379,135 @@ void TLineC::SetSelect(long nr_obiektu,unsigned char reserved)
 }
 
 //
-//Zwraca 1 jezeli obiekt przechodci przez obszar zaznaczenia
-std::vector<TLine> TLineC::GetCross(float x1, float y1, float x2, float y2)
+// Zwraca true, jeżeli podany obiekt przechodzi przez obszar zaznaczenia
+//
+bool TLineC::IsCross(const TLine& line,
+	float x1, float y1,
+	float x2, float y2)
 {
-	std::vector<TLine> ret;
+	if (x1 > x2) std::swap(x1, x2);
+	if (y1 > y2) std::swap(y1, y2);
+
+	float dx = line.x2 - line.x1;
+	float dy = line.y2 - line.y1;
+
+	float tmin = 0.0f;
+	float tmax = 1.0f;
+
+	// X
+	if (dx == 0)
+	{
+		if (line.x1 < x1 || line.x1 > x2)
+			return false;
+	}
+	else
+	{
+		float t1 = (x1 - line.x1) / dx;
+		float t2 = (x2 - line.x1) / dx;
+
+		if (t1 > t2)
+			std::swap(t1, t2);
+
+		tmin = std::max(tmin, t1);
+		tmax = std::min(tmax, t2);
+
+		if (tmin > tmax)
+			return false;
+	}
+
+	// Y
+	if (dy == 0)
+	{
+		if (line.y1 < y1 || line.y1 > y2)
+			return false;
+	}
+	else
+	{
+		float t1 = (y1 - line.y1) / dy;
+		float t2 = (y2 - line.y1) / dy;
+
+		if (t1 > t2)
+			std::swap(t1, t2);
+
+		tmin = std::max(tmin, t1);
+		tmax = std::min(tmax, t2);
+
+		if (tmin > tmax)
+			return false;
+	}
+
+	return true;
+}
+
+
+//
+// Sprawdza podany obiekt.
+//
+// cross == false:
+//   cały obiekt musi znajdować się w obszarze.
+//
+// cross == true:
+//   dowolna część obiektu może znajdować się w obszarze.
+//
+bool TLineC::IsIn(const TLine& line, float x1, float y1, float x2, float y2, bool cross)
+{
+	if (cross)
+		return IsCross(line, x1, y1, x2, y2);
 
 	if (x1 > x2) std::swap(x1, x2);
 	if (y1 > y2) std::swap(y1, y2);
 
-	for (size_t ii = 0; ii < Line.size(); ii++)
+	float minx = std::min(line.x1, line.x2);
+	float maxx = std::max(line.x1, line.x2);
+	float miny = std::min(line.y1, line.y2);
+	float maxy = std::max(line.y1, line.y2);
+
+	return minx >= x1 &&
+		maxx <= x2 &&
+		miny >= y1 &&
+		maxy <= y2;
+}
+
+
+//
+// Zwraca wszystkie obiekty, które przechodzą przez obszar zaznaczenia.
+//
+std::vector<TLine> TLineC::GetCross(
+	float x1, float y1,
+	float x2, float y2)
+{
+	std::vector<TLine> ret;
+
+	for (const TLine& line : Line)
 	{
-		float dx = Line[ii].x2 - Line[ii].x1;
-		float dy = Line[ii].y2 - Line[ii].y1;
-
-		float tmin = 0.0f;
-		float tmax = 1.0f;
-
-		// X
-		if (dx == 0) 
-			if (Line[ii].x1 < x1 || Line[ii].x1 > x2) continue;
-		else
-		{
-			float t1 = (x1 - Line[ii].x1) / dx;
-			float t2 = (x2 - Line[ii].x1) / dx;
-
-			if (t1 > t2) std::swap(t1, t2);
-
-			tmin = std::max(tmin, t1);
-			tmax = std::min(tmax, t2);
-
-			if (tmin > tmax)
-				continue;
-		}
-
-		// Y
-		if (dy == 0)
-			if (Line[ii].y1 < y1 || Line[ii].y1 > y2) continue;
-		else
-		{
-			float t1 = (y1 - Line[ii].y1) / dy;
-			float t2 = (y2 - Line[ii].y1) / dy;
-
-			if (t1 > t2) std::swap(t1, t2);
-
-			tmin = std::max(tmin, t1);
-			tmax = std::min(tmax, t2);
-
-			if (tmin > tmax) continue;
-		}
-
-		ret.push_back(Line[ii]);
+		if (IsCross(line, x1, y1, x2, y2))
+			ret.push_back(line);
 	}
 
 	return ret;
 }
 
+
 //
-//Zwraca 1 jezeli obiekt jest w obszarze zaznaczenia
-//cross jezeli 0 sprawdza czy caly obiekt jest w srodku 
-//jezeli 1 czy dowolna czesc jest w srodku
-std::vector<TLine> TLineC::GetIn(float x1, float y1, float x2, float y2, bool cross)
+// Zwraca wszystkie obiekty spełniające warunek:
+//
+// cross == false:
+//   cały obiekt znajduje się w obszarze.
+//
+// cross == true:
+//   dowolna część obiektu znajduje się w obszarze.
+//
+std::vector<TLine> TLineC::GetIn(
+	float x1, float y1,
+	float x2, float y2,
+	bool cross)
 {
-	if (cross) return GetCross(x1, y1, x2, y2);
 	std::vector<TLine> ret;
 
-	if (x1 > x2) std::swap(x1, x2);
-	if (y1 > y2) std::swap(y1, y2);
-
-	for (size_t ii = 0; ii < Line.size(); ii++)
+	for (const TLine& line : Line)
 	{
-		float minx = std::min(Line[ii].x1, Line[ii].x2);
-		float maxx = std::max(Line[ii].x1, Line[ii].x2);
-		float miny = std::min(Line[ii].y1, Line[ii].y2);
-		float maxy = std::max(Line[ii].y1, Line[ii].y2);
-
-		if (minx >= x1 &&
-			maxx <= x2 &&
-			miny >= y1 &&
-			maxy <= y2)
-		{
-			ret.push_back(Line[ii]);
-		}
+		if (IsIn(line, x1, y1, x2, y2, cross))
+			ret.push_back(line);
 	}
 
 	return ret;
@@ -517,6 +565,8 @@ TEST(test_make_line_0)
 TEST(test_make_line_1)
 {
 	TLineC line;
+
+	CHECK(line.ObSize() == 22);
 	line.Add(TLine{0,0,0,0,0,0,0});
 
 	CHECK(line.Line.size() == 1);

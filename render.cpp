@@ -5,9 +5,11 @@
 #include <vector>
 #include "line.h"
 #include "obiekt.h"
-#include "test.h"
+#include "test.hpp"
 #include "header.hpp"
 #include <blend2d/blend2d.h>
+#include "get_linie.hpp"
+
 #define M_PI 3.1415
 
 
@@ -721,3 +723,13 @@ int main()
 //   4. Use the Error List window to view errors
 //   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
 //   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+
+TEST(GetMaxMinLineData)
+{
+    //size_t GetMaxMinLineData(std::vector<TLine> &data, const std::string & sciezka, float zoom, int szerokosc,
+    //    int wysokosc, float srodek_x, float srodek_y, float margines_px = 2)
+    std::vector<TLine> data;
+    CHECK(data.size() == 0);
+
+    GetMaxMinLineData(data, "linie.bin", 1, 800, 600, 0, 0);
+}

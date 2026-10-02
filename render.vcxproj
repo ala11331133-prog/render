@@ -167,13 +167,12 @@
     <ClCompile Include="header.hpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="render.cpp" />
-    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="get_linie.hpp" />
     <ClInclude Include="line.h" />
     <ClInclude Include="obiekt.h" />
-    <ClInclude Include="test.h" />
+    <ClInclude Include="test.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

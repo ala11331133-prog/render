@@ -21,9 +21,6 @@
     <ClCompile Include="line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="header.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
@@ -38,7 +35,7 @@
     <ClInclude Include="line.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test.h">
+    <ClInclude Include="test.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="get_linie.hpp">
