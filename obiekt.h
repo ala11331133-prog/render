@@ -7,6 +7,7 @@
 #pragma once
 
 #include <fstream>
+#include "irenderer.hpp"
 
 struct FLOATPOINT
 {
@@ -33,11 +34,25 @@ class IObiekt
 public:
 	virtual ~IObiekt() = default;
 
+	virtual void Free(void) = 0;
 	virtual ObjectType GetObjectType() = 0;
-	virtual size_t ObSize() = 0;
-	virtual size_t Size() = 0;
+	virtual size_t ObSize(void) = 0;
+	virtual size_t Size(void) = 0;
 	virtual std::vector<unsigned char> SaveBytes() = 0;
 	virtual size_t LoadBytes(const std::vector<unsigned char>& bytes) = 0;
+	virtual float Distance(long numer, float x3, float y3) = 0;
+	virtual void Draw(IRenderer& render, long numer, float szer_min, float szer_max, float wys_min, float wys_max, long warstwa = -1) = 0;
+	virtual void Sort(void) = 0;
+	virtual void Arytm(long obiekt, float dodaj, float razy = 1, long xy = 3, char zaznacz = 0) = 0;
+	virtual void Delete(long obiekt) = 0;
+	virtual void Deselect(void) = 0;
+	virtual long GetLayer(long nr_obiektu) = 0;
+	virtual void SetLayer(long nr_obiektu, unsigned char warstwa) = 0;
+	virtual long GetSelect(long nr_obiektu) = 0;
+	virtual void SetSelect(long nr_obiektu, unsigned char reserved) = 0;
+	virtual TMaxMinOb GetMaxMinWsp(void) = 0;
+	virtual std::vector<unsigned char> Get(size_t nr) = 0;
+	virtual bool Set(size_t nr, std::vector<unsigned char>& data) = 0;
 };
 
 //baza implementacyjna
@@ -65,8 +80,16 @@ public:
 	}
 
 	//
+	//zwraca rekord w bajtach
+	virtual std::vector<unsigned char> Get(size_t nr) = 0;
+
+	//
+	//zapisuje rekord w bajtach
+	virtual bool Set(size_t nr, std::vector<unsigned char>& data) = 0;
+
+	//
 	//zwraca bajty do zapisu
-	std::vector<unsigned char> SaveBytes()
+	virtual std::vector<unsigned char> SaveBytes()
 	{
 		static_assert(std::is_trivially_copyable_v<T>);
 
@@ -83,7 +106,7 @@ public:
 
 	//
 	//Laduje z bajtow
-	size_t LoadBytes(const std::vector<unsigned char>& bytes)
+	virtual size_t LoadBytes(const std::vector<unsigned char>& bytes)
 	{
 		static_assert(std::is_trivially_copyable_v<T>);
 
@@ -104,7 +127,7 @@ public:
 
 	//
 	//Wyswietla linie na wskazanym dc
-	virtual void Draw(long numer,
+	virtual void Draw(IRenderer& render, long numer,
 		float szer_min,float szer_max,float wys_min,float wys_max,long warstwa=-1) = 0;
 
 	//
@@ -158,7 +181,7 @@ public:
 	//jezeli 1 czy dowolna czesc jest w srodku
 	virtual bool IsIn(const T& line, float x1, float y1, float x2, float y2, bool cross) = 0;
 
-	bool IsIn(const T& line, TMaxMinOb m, bool cross)
+	virtual bool IsIn(const T& line, TMaxMinOb m, bool cross)
 	{
 		return IsIn(line, m.minx, m.miny, m.maxx, m.maxy, cross);
 	}

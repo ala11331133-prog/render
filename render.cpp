@@ -10,7 +10,7 @@
 #include <blend2d/blend2d.h>
 #include "get_linie.hpp"
 
-#define M_PI 3.1415
+#define M_PI = 3.14159265358979323846
 
 
 /*#include "include/core/SkBitmap.h"
@@ -142,6 +142,8 @@ void draw_text_on_lines_old(
 
     ctx.set_fill_style(text_color);
 
+    constexpr double PI = 3.14159265358979323846;
+
     for (size_t i = 0; i < run.size; ++i)
     {
         // Odczytujemy ID glyphu.
@@ -193,19 +195,16 @@ void draw_text_on_lines_old(
         double angle = segment->angle;
 
         // Tekst zawsze czytelny.
-        if (angle > M_PI/2)
-            angle -= M_PI;
+        if (angle > PI/2.0)
+            angle -= PI;
 
-        if (angle < -M_PI/2)
-            angle += M_PI;
+        if (angle < -PI/2.0)
+            angle += PI;
 
         // Tworzymy run zawierający tylko jeden glyph.
         BLGlyphRun single_run = run;
 
-        single_run.glyph_data =
-            const_cast<uint8_t*>(
-                glyph_data + i * glyph_step
-                );
+        single_run.glyph_data = const_cast<uint8_t*>( glyph_data + i * glyph_step);
 
         single_run.size = 1;
 
@@ -217,11 +216,7 @@ void draw_text_on_lines_old(
         ctx.translate(x, y);
         ctx.rotate(angle);
 
-        ctx.fill_glyph_run(
-            BLPoint(0, 0),
-            font,
-            single_run
-        );
+        ctx.fill_glyph_run(BLPoint(0, 0), font, single_run);
 
         ctx.restore();
     }
@@ -270,20 +265,10 @@ void draw_text_on_lines(
         if (length < 0.001)
             continue;
 
-        ctx.stroke_line(
-            BLPoint(line.x1, line.y1),
-            BLPoint(line.x2, line.y2)
-        );
+        ctx.stroke_line(BLPoint(line.x1, line.y1), BLPoint(line.x2, line.y2));
 
-        segments.push_back({
-            line.x1,
-            line.y1,
-            line.x2,
-            line.y2,
-            length,
-            std::atan2(dy, dx),
-            total_length
-            });
+        segments.push_back({line.x1, line.y1, line.x2, line.y2, length,
+                            std::atan2(dy, dx), total_length});
 
         total_length += length;
     }
@@ -309,8 +294,7 @@ void draw_text_on_lines(
     // Glyph ID
     // ------------------------------------------------------------
 
-    const uint32_t* glyph_data =
-        run.glyph_data_as<uint32_t>();
+    const uint32_t* glyph_data = run.glyph_data_as<uint32_t>();
 
     if (!glyph_data)
         return;
@@ -321,12 +305,7 @@ void draw_text_on_lines(
 
     std::vector<BLGlyphPlacement> placements(run.size);
 
-    font.get_glyph_advances(
-        glyph_data,
-        run.glyph_advance,
-        placements.data(),
-        run.size
-    );
+    font.get_glyph_advances(glyph_data, run.glyph_advance, placements.data(), run.size);
 
     // ------------------------------------------------------------
     // Całkowita długość tekstu
@@ -357,12 +336,10 @@ void draw_text_on_lines(
 
     for (size_t i = 0; i < run.size; ++i)
     {
-        const BLGlyphPlacement& placement =
-            placements[i];
+        const BLGlyphPlacement& placement = placements[i];
 
         // Pozycja początku glyphu.
-        const double glyph_distance =
-            distance * scale;
+        const double glyph_distance = distance * scale;
 
         // --------------------------------------------------------
         // Znajdź segment
@@ -380,26 +357,19 @@ void draw_text_on_lines(
             }
         }
 
-        if (!segment)
-            break;
+        if (!segment) break;
 
         // --------------------------------------------------------
         // Pozycja na segmencie
         // --------------------------------------------------------
 
-        const double local =
-            glyph_distance - segment->start;
+        const double local = glyph_distance - segment->start;
 
-        const double t =
-            local / segment->length;
+        const double t = local / segment->length;
 
-        const double x =
-            segment->x1 +
-            (segment->x2 - segment->x1) * t;
+        const double x = segment->x1 + (segment->x2 - segment->x1) * t;
 
-        const double y =
-            segment->y1 +
-            (segment->y2 - segment->y1) * t;
+        const double y = segment->y1 + (segment->y2 - segment->y1) * t;
 
         double angle = segment->angle;
 
@@ -418,22 +388,17 @@ void draw_text_on_lines(
 
         BLGlyphRun glyph_run = run;
 
-        glyph_run.glyph_data =
-            const_cast<uint32_t*>(glyph_data + i);
+        glyph_run.glyph_data = const_cast<uint32_t*>(glyph_data + i);
 
-        glyph_run.glyph_advance =
-            sizeof(uint32_t);
+        glyph_run.glyph_advance = sizeof(uint32_t);
 
         glyph_run.size = 1;
 
-        glyph_run.placement_type =
-            BL_GLYPH_PLACEMENT_TYPE_ADVANCE_OFFSET;
+        glyph_run.placement_type = BL_GLYPH_PLACEMENT_TYPE_ADVANCE_OFFSET;
 
-        glyph_run.placement_data =
-            const_cast<BLGlyphPlacement*>(&placement);
+        glyph_run.placement_data = const_cast<BLGlyphPlacement*>(&placement);
 
-        glyph_run.placement_advance =
-            sizeof(BLGlyphPlacement);
+        glyph_run.placement_advance = sizeof(BLGlyphPlacement);
 
         // --------------------------------------------------------
         // Rysowanie
@@ -444,11 +409,7 @@ void draw_text_on_lines(
         ctx.translate(x, y);
         ctx.rotate(angle);
 
-        ctx.fill_glyph_run(
-            BLPoint(0, 0),
-            font,
-            glyph_run
-        );
+        ctx.fill_glyph_run(BLPoint(0, 0), font, glyph_run);
 
         ctx.restore();
 

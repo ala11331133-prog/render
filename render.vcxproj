@@ -163,6 +163,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="irenderer.hpp" />
     <ClCompile Include="func.cpp" />
     <ClCompile Include="header.hpp" />
     <ClCompile Include="line.cpp" />
@@ -170,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="get_linie.hpp" />
+    <ClInclude Include="irenderer_blend2d.hpp" />
     <ClInclude Include="line.h" />
     <ClInclude Include="obiekt.h" />
     <ClInclude Include="test.hpp" />

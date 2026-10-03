@@ -59,6 +59,29 @@ size_t TLineC::Save(std::vector<TLine>& data)
 }
 
 //
+//zwraca rekord w bajtach
+std::vector<unsigned char> TLineC::Get(size_t nr)
+{
+	std::vector<unsigned char> ret;
+	if (nr >= Size()) return ret;
+
+	ret.resize(ObSize());
+
+	std::memcpy(ret.data(), &Line[nr], sizeof(TLine));
+	return ret;
+}
+
+//
+//zapisuje rekord w bajtach
+bool TLineC::Set(size_t nr, std::vector<unsigned char>& data)
+{
+	if(nr >= Size()) return false;
+	if (data.size() != ObSize()) return false;
+	std::memcpy(&Line[nr], data.data(), sizeof(TLine));
+	return true;
+}
+
+//
 //Oblicz odleglosc punktu do obiektu
 float TLineC::Distance(long numer,float x3,float y3)
 {
@@ -141,7 +164,7 @@ float TLineC::Distance(long numer,float x3,float y3)
 
 //
 //Wyswietla linie na wskazanym dc
-void TLineC::Draw(long numer,
+void TLineC::Draw(IRenderer& render, long numer,
 				 float szer_min,float szer_max,
 				 float wys_min,float wys_max,long warstwa)
 {

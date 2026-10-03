@@ -8,6 +8,7 @@
 #include <fstream>
 #include <vector>
 #include "obiekt.h"
+#include "irenderer.hpp"
 
 //
 //Struktura do zapisu linii jako punktu i generowania polaczen
@@ -85,41 +86,50 @@ public:
 	
 	//
 	//Zwalinia pamiec
-	void Free(void);
+	void Free(void) override;
 
 	//
     //Zwraca 1 jak obiekty sa rowne 0 jak nie
-	int Equal(TLine a, TLine b);
+	int Equal(TLine a, TLine b) override;
 
 	//
 	//Ladowanie danych i rezerwacja pamieci
-	size_t Load(const std::vector<TLine> &data);
+	size_t Load(const std::vector<TLine> &data) override;
 
 	//
 	//Zapis danych
-	size_t Save(std::vector<TLine> &data);
+	size_t Save(std::vector<TLine> &data) override;
+
+	//
+	//zwraca rekord w bajtach
+	std::vector<unsigned char> Get(size_t nr) override;
+
+	//
+	//zapisuje rekord w bajtach
+	bool Set(size_t nr, std::vector<unsigned char>& data) override;
+
 
 	//
 	//Oblicz odleglosc obiektu do punktu
-	float Distance(long numer,float x3,float y3);
+	float Distance(long numer,float x3,float y3) override;
 
 	//
 	//Wyswietla linie na wskazanym dc
-	void Draw(long numer,
-			float szer_min,float szer_max,float wys_min,float wys_max,long warstwa=-1);
+	void Draw(IRenderer &render, long numer,
+			float szer_min,float szer_max,float wys_min,float wys_max,long warstwa=-1) override;
 
 
 	//
 	//Dodaje element
-	size_t Add(TLine line);
+	size_t Add(TLine line) override;
 
 	//
 	//Dodaje elementy
-	size_t Add(const std::vector<TLine>& data);
+	size_t Add(const std::vector<TLine>& data) override;
 
 	//
 	//Sortowanie obiektu w celu optymalizacji wyswietlania
-	void Sort(void);
+	void Sort(void) override;
 
 	//
 	//Operacje arytmetyczne dla dango obiektu
@@ -127,35 +137,35 @@ public:
 	//zmienna xy ustawiona na 1 zmienia x ustawiona na 2 zmienia y
 	//ustawiona na 3 zmienia x i y.
 	//jezeli zaznacz=1 to dziala tylko na zaznaczonych
-	void Arytm(long obiekt,float dodaj,float razy=1,long xy=3,char zaznacz=0);
+	void Arytm(long obiekt,float dodaj,float razy=1,long xy=3,char zaznacz=0) override;
 
 	//
 	//Operacja usuwania obiektu
-	void Delete(long obiekt);
+	void Delete(long obiekt) override;
 
 	//
 	//Odznacza wszystkie obiekty
-	void Deselect(void);
+	void Deselect(void) override;
 	
 	//
 	//Podaje warstwe danego obiektu
-	long GetLayer(long nr_obiektu);
+	long GetLayer(long nr_obiektu) override;
 
 	//
 	//Zapisuje nowa warstwe dla danego obiektu
-	void SetLayer(long nr_obiektu,unsigned char warstwa);
+	void SetLayer(long nr_obiektu,unsigned char warstwa) override;
 
 	//
 	//Podaje reserved danego obiektu
-	long GetSelect(long nr_obiektu);
+	long GetSelect(long nr_obiektu) override;
 
 	//
 	//Zapisuje nowa wartosc reserved dla danego obiektu
-	void SetSelect(long nr_obiektu,unsigned char reserved);
+	void SetSelect(long nr_obiektu,unsigned char reserved) override;
 
 	//
 	//Zwraca 1 jezeli obiekt przechodci przez obszar zaznaczenia
-	bool IsCross(const TLine& line, float x1, float y1, float x2, float y2);
+	bool IsCross(const TLine& line, float x1, float y1, float x2, float y2) ;
 
 	//
 	//Zwraca 1 jezeli obiekt jest w obszarze zaznaczenia
@@ -172,21 +182,22 @@ public:
 	//Zwraca 1 jezeli obiekt jest w obszarze zaznaczenia
 	//cross jezeli 0 sprawdza czy caly obiekt jest w srodku 
 	//jezeli 1 czy dowolna czesc jest w srodku
-	std::vector<TLine> GetIn(float x1, float y1, float x2, float y2, bool cross);
+	std::vector<TLine> GetIn(float x1, float y1, float x2, float y2, bool cross) override;
 
 	//
 	//Wylicza i zwraca maxymalne i minimalne wspolrzedne
-	TMaxMinOb GetMaxMinWsp(void);
+	TMaxMinOb GetMaxMinWsp(void) override;
 
 	//zwraca typ objektu
-	ObjectType GetObjectType(void);
+	ObjectType GetObjectType(void) override;
 
 	//
 	//zwraca ilosc bajtow jednego objektu
-	size_t ObSize(void);
+	size_t ObSize(void) override;
 
 	//zwraca ilosc objektow
-	size_t Size(void);
+	size_t Size(void) override;
+
 
 	//
 	//Obiekty o identyfikatorze 0
