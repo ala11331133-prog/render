@@ -37,7 +37,7 @@ inline bool OknoWidoku(float zoom, int szerokosc, int wysokosc, float srodek_x, 
 // Czyta plik i wrzuca do data tylko widoczne kreski (stare dane z data znikaja).
 // Zwraca ile ich jest. Przy zlych rozmiarach, braku pliku albo uciętym pliku zwraca 0.
 // Plik czytamy po kawalku, zeby nie trzymac calej mapy w pamieci.
-size_t GetMaxMinLineData(std::vector<TLine> &data, const std::string &sciezka, float zoom, int szerokosc,
+inline size_t GetMaxMinLineData(std::vector<TLine> &data, const std::string &sciezka, float zoom, int szerokosc,
                   int wysokosc, float srodek_x, float srodek_y, float margines_px = 2)
 {
     TLineC line;

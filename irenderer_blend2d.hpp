@@ -19,25 +19,30 @@ public:
         face.create_from_file(fontPath.string().c_str());
         font.create_from_face(face, fontSize);
 
-        BLImage image(800, 600, BL_FORMAT_PRGB32);
-        ctx.fill_all(BLRgba32(0, 0, 0, 0));
+        image.create(width, height, BL_FORMAT_PRGB32);
+        ctx.fill_all(BLRgba32(0, 0, 0, 255));
     }
 
-    void SetLineSizeColour(int line_size, unsigned char R, unsigned char G, unsigned char B) override
+    void SetLineSizeColour(int line_size, RenderPixel px) override
     {
         //BLImage image(800, 600, BL_FORMAT_PRGB32);
         //BLContext ctx(image);
         //ctx.fill_all(BLRgba32(0, 0, 0, 0));
 
         ctx.set_stroke_width(line_size);
-        ctx.set_stroke_style(BLRgba32(255, 0, 0));
+        ctx.set_stroke_style(BLRgba32(px.R, px.G, px.B, px.A));
     }
 
-    void SetImageSize(int w, int h, unsigned char R, unsigned char G, 
-                      unsigned char B, unsigned char A) override
+    void SetImageSize(int w, int h, RenderPixel background) override
     {
-        BLImage image(w, h, BL_FORMAT_PRGB32);
-        ctx.fill_all(BLRgba32(0, 0, 0, 0));
+        image.create(w, h, BL_FORMAT_PRGB32);
+        BLRgba32 pom{0};
+        pom.setR(background.R);
+        pom.setG(background.G);
+        pom.setB(background.B);
+        pom.setA(background.A);
+
+        ctx.fill_all(pom);
     }
 
     void Line(float x1, float y1, float x2, float y2) override

@@ -3,7 +3,7 @@
 #include <cstring>
 #include <cstdint>
 #include <vector>
-#include "obiekt.h"
+#include "obiekt_draw.h"
 
 #pragma pack(push, 1)
 struct ObjectHeader

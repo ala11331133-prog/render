@@ -5,6 +5,35 @@
 #include <vector>
 #include <cmath>
 
+struct RenderPixel
+{
+    RenderPixel(void) 
+    {
+        R = G = B = 0;
+        A = 255;
+    };
+    RenderPixel(unsigned char R, unsigned char G, unsigned char B, unsigned char A)
+    {
+        this->R = R;
+        this->G = G;
+        this->B = B;
+        this->A = A;
+    }
+
+    RenderPixel(unsigned char R, unsigned char G, unsigned char B)
+    {
+        this->R = R;
+        this->G = G;
+        this->B = B;
+        this->A = 255;
+    }
+
+    unsigned char R;
+    unsigned char G;
+    unsigned char B;
+    unsigned char A=255;
+};
+
 struct RenderLine
 {
     float x1, y1;
@@ -17,10 +46,9 @@ class IRenderer
 {
 public:
     virtual ~IRenderer() = default;
-    virtual void SetImageSize(int w, int h, unsigned char R, unsigned char G, 
-                              unsigned char B, unsigned char A) = 0;
+    virtual void SetImageSize(int w, int h, RenderPixel px) = 0;
 
-    virtual void SetLineSizeColour(int line_size, unsigned char R,  unsigned char G, unsigned char B) = 0;
+    virtual void SetLineSizeColour(int line_size, RenderPixel px) = 0;
 
     virtual void Line(float x1, float y1, float x2, float y2) = 0;
 

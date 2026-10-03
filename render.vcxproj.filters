@@ -30,9 +30,12 @@
     <ClCompile Include="irenderer.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="irenderer_blend2d_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="obiekt.h">
+    <ClInclude Include="obiekt_draw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="line.h">

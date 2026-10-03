@@ -7,7 +7,7 @@
 
 #include <fstream>
 #include <vector>
-#include "obiekt.h"
+#include "obiekt_draw.h"
 #include "irenderer.hpp"
 
 //
@@ -74,7 +74,7 @@ struct TLine
 
 static_assert(sizeof(TLine) == 22);
 
-class TLineC: public obiekt<TLine>
+class TLineC: public obiekt_draw<TLine>
 {
 public:
 
@@ -171,7 +171,7 @@ public:
 	//Zwraca 1 jezeli obiekt jest w obszarze zaznaczenia
 	//cross jezeli 0 sprawdza czy caly obiekt jest w srodku 
 	//jezeli 1 czy dowolna czesc jest w srodku
-	using obiekt<TLine>::IsIn;
+	using obiekt_draw<TLine>::IsIn;
 	bool IsIn(const TLine& line, float x1, float y1, float x2, float y2, bool cross);
 
 	//

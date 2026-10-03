@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "line.h"
-#include "obiekt.h"
+#include "obiekt_draw.h"
 #include "test.hpp"
 #include "header.hpp"
 #include <blend2d/blend2d.h>
@@ -463,7 +463,7 @@ int blend_test()
 }
 
 //TODO: to srednio tutaj pasuje gdzies trzeba przeniesc
-std::vector<unsigned char> GetObjectData(std::vector<IObiekt*>& objects)
+std::vector<unsigned char> GetObjectData(std::vector<iobiekt_draw*>& objects)
 {
     FileHeader fileHeader;
     fileHeader.objects_header = (std::uint32_t)objects.size();
@@ -473,7 +473,7 @@ std::vector<unsigned char> GetObjectData(std::vector<IObiekt*>& objects)
     auto data = fileHeader.SaveBytes();
     ret.insert(ret.end(), data.begin(), data.end());
 
-    for (IObiekt* ob : objects)
+    for (iobiekt_draw* ob : objects)
     {
         ObjectHeader objectHeader;
 
@@ -498,7 +498,7 @@ TEST(GetObjectData_Empty)
     //tutaj trzeba wypelnic dane
     TLineC ob1;
 
-    std::vector<IObiekt*> ob{&ob1};
+    std::vector<iobiekt_draw*> ob{&ob1};
     auto data = GetObjectData(ob);
     CHECK(data.size() == sizeof(FileHeader) + sizeof(ObjectHeader));
 
@@ -544,7 +544,7 @@ TEST(GetObjectData_elements)
     ob1.Add(TLine{ 1, 2, 3, 4, 5, 0, 0 });
     ob1.Add(TLine{ 9, 8, 7, 6, 5, 5, 3 });
 
-    std::vector<IObiekt*> ob{ &ob1 };
+    std::vector<iobiekt_draw*> ob{ &ob1 };
     auto data = GetObjectData(ob);
     CHECK(data.size() == sizeof(FileHeader) + sizeof(ObjectHeader) + ob1.ObSize()*ob1.Size());
 
@@ -685,7 +685,7 @@ int main()
 //   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
 //   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
 
-TEST(GetMaxMinLineData)
+TEST(GetMaxMinLineDataTest)
 {
     //size_t GetMaxMinLineData(std::vector<TLine> &data, const std::string & sciezka, float zoom, int szerokosc,
     //    int wysokosc, float srodek_x, float srodek_y, float margines_px = 2)

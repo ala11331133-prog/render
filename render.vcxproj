@@ -166,6 +166,7 @@
     <ClCompile Include="irenderer.hpp" />
     <ClCompile Include="func.cpp" />
     <ClCompile Include="header.hpp" />
+    <ClCompile Include="irenderer_blend2d_test.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="render.cpp" />
   </ItemGroup>
@@ -173,7 +174,7 @@
     <ClInclude Include="get_linie.hpp" />
     <ClInclude Include="irenderer_blend2d.hpp" />
     <ClInclude Include="line.h" />
-    <ClInclude Include="obiekt.h" />
+    <ClInclude Include="obiekt_draw.h" />
     <ClInclude Include="test.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

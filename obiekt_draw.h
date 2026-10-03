@@ -29,10 +29,10 @@ enum class ObjectType : uint32_t
 };
 
 //interface (mozna tylko dodawac funkcje niezalezne od typu)
-class IObiekt
+class iobiekt_draw
 {
 public:
-	virtual ~IObiekt() = default;
+	virtual ~iobiekt_draw() = default;
 
 	virtual void Free(void) = 0;
 	virtual ObjectType GetObjectType() = 0;
@@ -57,7 +57,7 @@ public:
 
 //baza implementacyjna
 template <typename T>
-class obiekt : public IObiekt
+class obiekt_draw : public iobiekt_draw
 {
 public:	
 	//
