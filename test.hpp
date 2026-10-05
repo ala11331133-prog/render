@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include <chrono>
 
 #pragma once
 
@@ -19,15 +20,28 @@ inline int g_TestErrors = 0;
 #pragma once
 
 #if TEST_ENABLED == 1
-    #if PRINT_ONLY_FAIL == 1
-        #define TEST(name) void name(); static bool _##name = (++g_TestCount, name(), true);; void name()
-    #else
-        #define TEST(name) void name(); static bool _##name = (++g_TestCount, std::cout << "TEST: " << #name << ": ", name(), std::cout << "OK\n", true); void name()
-    #endif
-#else
-    #define TEST(name) void name(); void name()
-#endif
 
+#define TEST(name) \
+    void name(); \
+    static bool _##name = (++g_TestCount, [&]() { \
+        auto start = std::chrono::steady_clock::now(); \
+        if constexpr (PRINT_ONLY_FAIL == 0) \
+            std::cout << "TEST: " << #name << ": "; \
+        name(); \
+        auto end = std::chrono::steady_clock::now(); \
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(); \
+        if constexpr (PRINT_ONLY_FAIL == 0) \
+            std::cout << "OK (" << ms << " ms)\n"; \
+        return true; \
+    }()); \
+    void name()
+
+#else
+
+#define TEST(name) \
+    void name()
+
+#endif
 //CHECK(x > 0);
 //CHECK(ptr != nullptr);
 //CHECK(sizeof(TLine) == 22); 
