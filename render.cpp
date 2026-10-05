@@ -10,9 +10,6 @@
 #include <blend2d/blend2d.h>
 #include "get_linie.hpp"
 
-#define M_PI = 3.14159265358979323846
-
-
 /*#include "include/core/SkBitmap.h"
 #include "include/core/SkCanvas.h"
 #include "include/core/SkColor.h"
@@ -142,8 +139,6 @@ void draw_text_on_lines_old(
 
     ctx.set_fill_style(text_color);
 
-    constexpr double PI = 3.14159265358979323846;
-
     for (size_t i = 0; i < run.size; ++i)
     {
         // Odczytujemy ID glyphu.
@@ -195,11 +190,11 @@ void draw_text_on_lines_old(
         double angle = segment->angle;
 
         // Tekst zawsze czytelny.
-        if (angle > PI/2.0)
-            angle -= PI;
+        if (angle > M_PI/2.0)
+            angle -= M_PI;
 
-        if (angle < -PI/2.0)
-            angle += PI;
+        if (angle < -M_PI/2.0)
+            angle += M_PI;
 
         // Tworzymy run zawierający tylko jeden glyph.
         BLGlyphRun single_run = run;

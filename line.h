@@ -115,9 +115,9 @@ public:
 
 	//
 	//Wyswietla linie na wskazanym dc
-	void Draw(IRenderer &render, long numer,
-			float szer_min,float szer_max,float wys_min,float wys_max,long warstwa=-1) override;
-
+	void Draw(IRenderer& render,
+		float srodek_x, float srodek_y, float zoom, int szerokosc,
+		int wysokosc, long warstwa = -1) override;
 
 	//
 	//Dodaje element

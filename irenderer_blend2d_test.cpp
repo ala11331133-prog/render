@@ -44,12 +44,49 @@ TEST(GetMaxMinLineData)
 
 	for (int ii = 0; ii < line.Size(); ii++)
 	{
-		blend.Line(
-			(line.Line[ii].x1 - move_x) * zoom_x + wi / 2,
+		blend.Line( (line.Line[ii].x1 - move_x) * zoom_x + wi / 2,
 			(line.Line[ii].y1 - move_y) * zoom_y + he / 2,
 			(line.Line[ii].x2 - move_x) * zoom_x + wi / 2,
 			(line.Line[ii].y2 - move_y) * zoom_y + he / 2);
 	}
 
 	blend.Save("test1.png");
+}
+
+TEST(rysuj_kreski)
+{
+	using TestObject = TLineC;
+	using TestData = TLine;
+
+	int wi = 800;
+	int he = 600;
+
+	std::vector<TestData> data;
+	CHECK(data.size() == 0);
+
+	GetMaxMinLineData(data, "linie.bin", 1, wi, he, 0, 0);
+
+	CHECK(data.size() > 0);
+
+	TestObject object;
+	object.Add(data);
+	object.Arytm(-1, 0, -1);
+
+	CHECK(object.Size() > 0);
+
+	float srodek_x;
+	float srodek_y;
+	float zoom;
+
+	object.GetView(wi, he, srodek_x, srodek_y, zoom, 2.0f);
+
+	CHECK(zoom > 0.0f);
+
+	BL2DRenderer blend(wi, he);
+
+	blend.SetLineSizeColour(1, RenderPixel(255, 0, 0));
+
+	object.Draw(blend, srodek_x, srodek_y, zoom, wi, he);
+
+	CHECK(!blend.Save("test2.png"));
 }

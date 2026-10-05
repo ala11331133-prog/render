@@ -1,6 +1,3 @@
-//
-//Autor: Michal Huppert
-//
 //Wirtualny obiekt reprezentujacy cechy wspolne 
 //wszystkich obiektow mapy
 //
@@ -8,6 +5,9 @@
 
 #include <fstream>
 #include "irenderer.hpp"
+
+#define M_PI 3.14159265358979323846
+
 
 struct FLOATPOINT
 {
@@ -41,7 +41,8 @@ public:
 	virtual std::vector<unsigned char> SaveBytes() = 0;
 	virtual size_t LoadBytes(const std::vector<unsigned char>& bytes) = 0;
 	virtual float Distance(long numer, float x3, float y3) = 0;
-	virtual void Draw(IRenderer& render, long numer, float szer_min, float szer_max, float wys_min, float wys_max, long warstwa = -1) = 0;
+	virtual void GetView(int szerokosc, int wysokosc, float& srodek_x, float& srodek_y, float& zoom, float margines_px) = 0;
+	virtual void Draw(IRenderer& render, float srodek_x, float srodek_y, float zoom, int szerokosc, int wysokosc, long warstwa = -1) = 0;
 	virtual void Sort(void) = 0;
 	virtual void Arytm(long obiekt, float dodaj, float razy = 1, long xy = 3, char zaznacz = 0) = 0;
 	virtual void Delete(long obiekt) = 0;
@@ -126,10 +127,52 @@ public:
 	virtual float Distance(long numer, float x3, float y3) = 0;
 
 	//
-	//Wyswietla linie na wskazanym dc
-	virtual void Draw(IRenderer& render, long numer,
-		float szer_min,float szer_max,float wys_min,float wys_max,long warstwa=-1) = 0;
+	//zwraca view czyli poczatkowy zoom dla danego ekranu
+	virtual void GetView(int szerokosc, int wysokosc, float& srodek_x, float& srodek_y, float& zoom, float margines_px)
+	{
+		srodek_x = 0.0f;
+		srodek_y = 0.0f;
+		zoom = 1.0f;
 
+		if (szerokosc <= 0 || wysokosc <= 0)
+			return;
+
+		if (margines_px < 0.0f)
+			margines_px = 0.0f;
+
+		if (Size() == 0)
+			return;
+
+		TMaxMinOb maxmin = GetMaxMinWsp();
+
+		srodek_x = (maxmin.minx + maxmin.maxx) / 2.0f;
+		srodek_y = (maxmin.miny + maxmin.maxy) / 2.0f;
+
+		float mapa_szerokosc = maxmin.maxx - maxmin.minx;
+		float mapa_wysokosc = maxmin.maxy - maxmin.miny;
+
+		if (mapa_szerokosc <= 0.0f || mapa_wysokosc <= 0.0f)
+			return;
+
+		float dostepna_szerokosc = szerokosc - 2.0f * margines_px;
+
+		float dostepna_wysokosc = wysokosc - 2.0f * margines_px;
+
+		if (dostepna_szerokosc <= 0.0f || dostepna_wysokosc <= 0.0f)
+			return;
+
+		float zoom_x = dostepna_szerokosc / mapa_szerokosc;
+
+		float zoom_y = dostepna_wysokosc / mapa_wysokosc;
+
+		zoom = std::min(zoom_x, zoom_y);
+	}
+
+	//
+	//Wyswietla linie na wskazanym dc
+	virtual void Draw( IRenderer& render,
+		float srodek_x, float srodek_y, float zoom, int szerokosc,
+		int wysokosc, long warstwa = -1) = 0;
 	//
 	//Dodaje element
 	virtual size_t Add(T line) = 0;

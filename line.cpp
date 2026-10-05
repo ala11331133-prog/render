@@ -164,61 +164,27 @@ float TLineC::Distance(long numer,float x3,float y3)
 
 //
 //Wyswietla linie na wskazanym dc
-void TLineC::Draw(IRenderer& render, long numer,
-				 float szer_min,float szer_max,
-				 float wys_min,float wys_max,long warstwa)
+void TLineC::Draw(IRenderer& render,
+	float srodek_x, float srodek_y, float zoom, int szerokosc,
+	int wysokosc, long warstwa)
 {
+	if (szerokosc <= 0 || wysokosc <= 0)
+		return;
 
-	//TODO::sprawdzimy najpierw skia
-	//TODO::dodac rysowanie
-	/*float x1,y1,x2,y2;
-	HPEN ppen;
+	if (zoom <= 0.0f)
+		return;
 
-	//
-	//Przelicz wsp i rysuj
-	x1=Line[numer].x1;
-	y1=Line[numer].y1;
-	x2=Line[numer].x2;
-	y2=Line[numer].y2;
-	
-	//
-	//Jezeli poza ekranem to nie rysuj
-	if ( (x1<szer_min || x1>szer_max)&&
-		 (x2<szer_min || x2>szer_max)&&
-		 (y1<wys_min || y1>wys_max)&&
-		 (y2<wys_min || y2>wys_max) ) 
-		 return;
-
-	PrzelNaEkr(x1,y1);
-	PrzelNaEkr(x2,y2);
-
-	if (warstwa>0)
+	// Przeliczenie współrzędnych świata na ekran
+	for (size_t ii = 0; ii < Line.size(); ii++)
 	{
-		long wsp;
-		float wsp_pom;
-		wsp_pom=zm.GetZoom()*zm.GetLineRescal();
-		if (wsp_pom>1)
-			wsp=(long)wsp_pom;
-		else wsp=1;
-		ppen=CreatePen(	Wektor.WarDane[warstwa].rodzaj,
-						Wektor.WarDane[warstwa].grubosc*wsp,
-						RGB(Wektor.WarDane[warstwa].red,
-							Wektor.WarDane[warstwa].green,
-							Wektor.WarDane[warstwa].blue));
+		if (warstwa >= 0 && warstwa != Line[ii].warstwa) continue;
+		const float x1 = (Line[ii].x1 - srodek_x) * zoom + szerokosc / 2.0f;
+		const float y1 = (Line[ii].y1 - srodek_y) * zoom + wysokosc / 2.0f;
+		const float x2 = (Line[ii].x2 - srodek_x) * zoom + szerokosc / 2.0f;
+		const float y2 = (Line[ii].y2 - srodek_y) * zoom + wysokosc / 2.0f;
+		render.Line(x1, y1, x2, y2);
 	}
-
-	if (warstwa>0) dc1->SelectObject(ppen);
-
-	dc1->MoveTo((int)x1,(int)y1);
-	dc1->LineTo((int)x2,(int)y2);
-
-	if (warstwa>0)
-	{
-		dc1->SelectObject(kasujpen);
-		DeleteObject(ppen);
-	}*/
 }
-
 //
 //Wstaw Linie z pliku
 size_t TLineC::Add(TLine line)
@@ -297,7 +263,7 @@ void TLineC::Arytm(long obiekt,float dodaj,float razy,long xy,char zaznacz)
 	long l;
 	//
 	//Jezeli poza zakresem
-	if (obiekt>=Line.size()) return;
+	if (obiekt>=(long)Line.size()) return;
 
 	//
 	//Jezeli zmiana jednego obiektu
