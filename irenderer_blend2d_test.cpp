@@ -55,8 +55,10 @@ TEST(GetMaxMinLineData)
 
 TEST(rysuj_kreski)
 {
-	using TestObject = TLineC;
 	using TestData = TLine;
+
+	std::vector<std::unique_ptr<iobiekt_draw>> ob;
+	ob.push_back(std::make_unique<TLineC>());
 
 	int wi = 800;
 	int he = 600;
@@ -68,17 +70,21 @@ TEST(rysuj_kreski)
 
 	CHECK(data.size() > 0);
 
-	TestObject object;
-	object.Add(data);
-	object.Arytm(-1, 0, -1);
+	std::vector<unsigned char> bytes(data.size() * sizeof(TestData));
 
-	CHECK(object.Size() > 0);
+	if (!bytes.empty())
+		std::memcpy(bytes.data(), data.data(), bytes.size());
+
+	CHECK(ob[0]->LoadBytes(bytes) == data.size());
+	CHECK(ob[0]->Size() > 0);
+
+	ob[0]->Arytm(-1, 0, -1);
 
 	float srodek_x;
 	float srodek_y;
 	float zoom;
 
-	object.GetView(wi, he, srodek_x, srodek_y, zoom, 2.0f);
+	ob[0]->GetView(wi, he, srodek_x, srodek_y, zoom, 2.0f);
 
 	CHECK(zoom > 0.0f);
 
@@ -86,7 +92,7 @@ TEST(rysuj_kreski)
 
 	blend.SetLineSizeColour(1, RenderPixel(255, 0, 0));
 
-	object.Draw(blend, srodek_x, srodek_y, zoom, wi, he);
+	ob[0]->Draw(blend, srodek_x, srodek_y, zoom, wi, he);
 
 	CHECK(!blend.Save("test2.png"));
 }
