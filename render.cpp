@@ -458,12 +458,12 @@ int blend_test()
 }
 
 //TODO: to srednio tutaj pasuje gdzies trzeba przeniesc
-std::vector<unsigned char> GetObjectData(std::vector<iobiekt_draw*>& objects)
+std::vector<uint8_t> GetObjectData(std::vector<iobiekt_draw*>& objects)
 {
     FileHeader fileHeader;
     fileHeader.objects_header = (std::uint32_t)objects.size();
 
-    std::vector<unsigned char> ret;
+    std::vector<uint8_t> ret;
 
     auto data = fileHeader.SaveBytes();
     ret.insert(ret.end(), data.begin(), data.end());
@@ -504,7 +504,7 @@ TEST(GetObjectData_Empty)
 
     FileHeader fileHeader;
 
-    std::vector<unsigned char> fileData(
+    std::vector<uint8_t> fileData(
         data.begin(),
         data.begin() + sizeof(FileHeader)
     );
@@ -518,7 +518,7 @@ TEST(GetObjectData_Empty)
 
     ObjectHeader objectHeader;
 
-    std::vector<unsigned char> objectData(
+    std::vector<uint8_t> objectData(
         data.begin() + sizeof(FileHeader),
         data.end()
     );
@@ -550,7 +550,7 @@ TEST(GetObjectData_elements)
 
     FileHeader fileHeader;
 
-    std::vector<unsigned char> fileData(
+    std::vector<uint8_t> fileData(
         data.begin(),
         data.begin() + sizeof(FileHeader)
     );
@@ -564,7 +564,7 @@ TEST(GetObjectData_elements)
 
     ObjectHeader objectHeader;
 
-    std::vector<unsigned char> objectData(
+    std::vector<uint8_t> objectData(
         data.begin() + sizeof(FileHeader),
         data.begin() + sizeof(FileHeader) + sizeof(ObjectHeader)
     );
@@ -575,7 +575,7 @@ TEST(GetObjectData_elements)
     CHECK(objectHeader.byte_size == sizeof(TLine));
     CHECK(objectHeader.ob_count == 2);
 
-    std::vector<unsigned char> lineData(
+    std::vector<uint8_t> lineData(
         data.begin() + sizeof(FileHeader) + sizeof(ObjectHeader),
         data.end());
     std::vector<TLine> lines(lineData.size() / sizeof(TLine));

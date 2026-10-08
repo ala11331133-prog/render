@@ -16,16 +16,19 @@ struct ObjectHeader
     // ile jest obiektow
     uint64_t ob_count;
 
-    std::vector<unsigned char> SaveBytes() const
+    //nazwa objektu
+    char name[16] = { 0 };
+
+    std::vector<uint8_t> SaveBytes() const
     {
-        std::vector<unsigned char> bytes(sizeof(ObjectHeader));
+        std::vector<uint8_t> bytes(sizeof(ObjectHeader));
 
         std::memcpy(bytes.data(), this, sizeof(ObjectHeader));
 
         return bytes;
     }
 
-    bool LoadBytes(const std::vector<unsigned char>& bytes)
+    bool LoadBytes(const std::vector<uint8_t>& bytes)
     {
         if (bytes.size() != sizeof(ObjectHeader))
             return false;
@@ -44,16 +47,16 @@ public:
     uint32_t objects_header = 0;
     uint64_t offset;
 
-    std::vector<unsigned char> SaveBytes() const
+    std::vector<uint8_t> SaveBytes() const
     {
-        std::vector<unsigned char> bytes(sizeof(FileHeader));
+        std::vector<uint8_t> bytes(sizeof(FileHeader));
 
         std::memcpy(bytes.data(), this, sizeof(FileHeader));
 
         return bytes;
     }
 
-    bool LoadBytes(const std::vector<unsigned char>& bytes)
+    bool LoadBytes(const std::vector<uint8_t>& bytes)
     {
         if (bytes.size() != sizeof(FileHeader))
             return false;

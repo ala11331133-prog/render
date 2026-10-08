@@ -5,6 +5,7 @@
 
 #include <fstream>
 #include "irenderer.hpp"
+#include "layer.hpp"
 
 #define M_PI 3.14159265358979323846
 
@@ -25,7 +26,7 @@ struct TMaxMinOb
 enum class ObjectType : uint32_t
 {
 	None = 0,
-	Line,
+	Line = 1,
 };
 
 //interface (mozna tylko dodawac funkcje niezalezne od typu)
@@ -38,8 +39,8 @@ public:
 	virtual ObjectType GetObjectType() = 0;
 	virtual size_t ObSize(void) = 0;
 	virtual size_t Size(void) = 0;
-	virtual std::vector<unsigned char> SaveBytes() = 0;
-	virtual size_t LoadBytes(const std::vector<unsigned char>& bytes) = 0;
+	virtual std::vector<uint8_t> SaveBytes() = 0;
+	virtual size_t LoadBytes(const std::vector<uint8_t>& bytes) = 0;
 	virtual float Distance(long numer, float x3, float y3) = 0;
 	virtual void GetView(int szerokosc, int wysokosc, float& srodek_x, float& srodek_y, float& zoom, float margines_px) = 0;
 	virtual void Draw(IRenderer& render, float srodek_x, float srodek_y, float zoom, int szerokosc, int wysokosc, long warstwa = -1) = 0;
@@ -48,12 +49,14 @@ public:
 	virtual void Delete(long obiekt) = 0;
 	virtual void Deselect(void) = 0;
 	virtual long GetLayer(long nr_obiektu) = 0;
-	virtual void SetLayer(long nr_obiektu, unsigned char warstwa) = 0;
+	virtual void SetLayer(long nr_obiektu, uint8_t warstwa) = 0;
 	virtual long GetSelect(long nr_obiektu) = 0;
-	virtual void SetSelect(long nr_obiektu, unsigned char reserved) = 0;
+	virtual void SetSelect(long nr_obiektu, uint8_t reserved) = 0;
 	virtual TMaxMinOb GetMaxMinWsp(void) = 0;
-	virtual std::vector<unsigned char> Get(size_t nr) = 0;
-	virtual bool Set(size_t nr, std::vector<unsigned char>& data) = 0;
+	virtual std::vector<uint8_t> Get(size_t nr) = 0;
+	virtual bool Set(size_t nr, std::vector<uint8_t>& data) = 0;
+	virtual Layer GetLayerData(int nr) = 0;
+	virtual void SetLayerData(int nr, Layer) = 0;
 };
 
 //baza implementacyjna
@@ -82,22 +85,22 @@ public:
 
 	//
 	//zwraca rekord w bajtach
-	virtual std::vector<unsigned char> Get(size_t nr) = 0;
+	virtual std::vector<uint8_t> Get(size_t nr) = 0;
 
 	//
 	//zapisuje rekord w bajtach
-	virtual bool Set(size_t nr, std::vector<unsigned char>& data) = 0;
+	virtual bool Set(size_t nr, std::vector<uint8_t>& data) = 0;
 
 	//
 	//zwraca bajty do zapisu
-	virtual std::vector<unsigned char> SaveBytes()
+	virtual std::vector<uint8_t> SaveBytes()
 	{
 		static_assert(std::is_trivially_copyable_v<T>);
 
 		std::vector<T> data;
 		Save(data);
 
-		std::vector<unsigned char> bytes(data.size() * sizeof(T));
+		std::vector<uint8_t> bytes(data.size() * sizeof(T));
 
 		if (!bytes.empty())
 			std::memcpy(bytes.data(), data.data(), bytes.size());
@@ -107,7 +110,7 @@ public:
 
 	//
 	//Laduje z bajtow
-	virtual size_t LoadBytes(const std::vector<unsigned char>& bytes)
+	virtual size_t LoadBytes(const std::vector<uint8_t>& bytes)
 	{
 		static_assert(std::is_trivially_copyable_v<T>);
 
@@ -208,7 +211,7 @@ public:
 
 	//
 	//Zapisuje nowa warstwe dla danego obiektu
-	virtual void SetLayer(long nr_obiektu,unsigned char warstwa) = 0;
+	virtual void SetLayer(long nr_obiektu,uint8_t warstwa) = 0;
 
 	//
 	//Podaje warstwe danego obiektu
@@ -216,7 +219,7 @@ public:
 
 	//
 	//Zapisuje nowa warstwe dla danego obiektu
-	virtual void SetSelect(long nr_obiektu,unsigned char reserved) = 0;
+	virtual void SetSelect(long nr_obiektu,uint8_t reserved) = 0;
 
 	//
 	//Zwraca 1 jezeli obiekt jest w obszarze zaznaczenia
@@ -249,4 +252,14 @@ public:
 
 	//zwraca ilosc objektow
 	virtual size_t Size(void) = 0;
+
+	//
+	//pobiera warstwy
+	virtual Layer GetLayerData(int nr) { return layer[nr]; };
+
+	//ustawia warstwy
+	//
+	virtual void SetLayerData(int nr, Layer layer) { this->layer[nr] = layer; };
+
+	Layer layer[256];
 };

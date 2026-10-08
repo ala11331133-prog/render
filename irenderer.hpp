@@ -12,7 +12,7 @@ struct RenderPixel
         R = G = B = 0;
         A = 255;
     };
-    RenderPixel(unsigned char R, unsigned char G, unsigned char B, unsigned char A)
+    RenderPixel(uint8_t R, uint8_t G, uint8_t B, uint8_t A)
     {
         this->R = R;
         this->G = G;
@@ -20,7 +20,7 @@ struct RenderPixel
         this->A = A;
     }
 
-    RenderPixel(unsigned char R, unsigned char G, unsigned char B)
+    RenderPixel(uint8_t R, uint8_t G, uint8_t B)
     {
         this->R = R;
         this->G = G;
@@ -28,10 +28,10 @@ struct RenderPixel
         this->A = 255;
     }
 
-    unsigned char R;
-    unsigned char G;
-    unsigned char B;
-    unsigned char A=255;
+    uint8_t R;
+    uint8_t G;
+    uint8_t B;
+    uint8_t A=255;
 };
 
 struct RenderLine

@@ -70,7 +70,7 @@ TEST(rysuj_kreski)
 
 	CHECK(data.size() > 0);
 
-	std::vector<unsigned char> bytes(data.size() * sizeof(TestData));
+	std::vector<uint8_t> bytes(data.size() * sizeof(TestData));
 
 	if (!bytes.empty())
 		std::memcpy(bytes.data(), data.data(), bytes.size());

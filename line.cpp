@@ -60,9 +60,9 @@ size_t TLineC::Save(std::vector<TLine>& data)
 
 //
 //zwraca rekord w bajtach
-std::vector<unsigned char> TLineC::Get(size_t nr)
+std::vector<uint8_t> TLineC::Get(size_t nr)
 {
-	std::vector<unsigned char> ret;
+	std::vector<uint8_t> ret;
 	if (nr >= Size()) return ret;
 
 	ret.resize(ObSize());
@@ -73,7 +73,7 @@ std::vector<unsigned char> TLineC::Get(size_t nr)
 
 //
 //zapisuje rekord w bajtach
-bool TLineC::Set(size_t nr, std::vector<unsigned char>& data)
+bool TLineC::Set(size_t nr, std::vector<uint8_t>& data)
 {
 	if(nr >= Size()) return false;
 	if (data.size() != ObSize()) return false;
@@ -344,7 +344,7 @@ long TLineC::GetLayer(long nr_obiektu)
 
 //
 //Zapisuje nowa warstwe dla danego obiektu
-void TLineC::SetLayer(long nr_obiektu,unsigned char warstwa)
+void TLineC::SetLayer(long nr_obiektu,uint8_t warstwa)
 {
 	if (nr_obiektu>=0 && nr_obiektu < Line.size())
 		Line[nr_obiektu].warstwa=warstwa;
@@ -361,7 +361,7 @@ long TLineC::GetSelect(long nr_obiektu)
 
 //
 //Zapisuje nowa warstwe dla danego obiektu
-void TLineC::SetSelect(long nr_obiektu,unsigned char reserved)
+void TLineC::SetSelect(long nr_obiektu,uint8_t reserved)
 {
 	if (nr_obiektu>=0 && nr_obiektu < Line.size())
 		Line[nr_obiektu].reserved=reserved;

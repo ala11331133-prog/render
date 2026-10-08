@@ -11,27 +11,6 @@
 #include "irenderer.hpp"
 
 //
-//Struktura do zapisu linii jako punktu i generowania polaczen
-struct TWektor_sort
-{
-    long reserved;
-    unsigned long nrkreski;
-    float x,y;
-};
-
-//
-//Tablica polaczen
-//Zachowane dane ilosc polaczen,warstwa,dlugosc odcinka,polaczenia
-struct TPol
-{
-	unsigned char warstwa;
-	float odl;
-	float waga;
-	long *pol;
-};
-
-
-//
 //Dane lini
 //Obiekt o identyfikatorze 0
 #pragma pack(push, 1)
@@ -102,11 +81,11 @@ public:
 
 	//
 	//zwraca rekord w bajtach
-	std::vector<unsigned char> Get(size_t nr) override;
+	std::vector<uint8_t> Get(size_t nr) override;
 
 	//
 	//zapisuje rekord w bajtach
-	bool Set(size_t nr, std::vector<unsigned char>& data) override;
+	bool Set(size_t nr, std::vector<uint8_t>& data) override;
 
 
 	//
@@ -153,7 +132,7 @@ public:
 
 	//
 	//Zapisuje nowa warstwe dla danego obiektu
-	void SetLayer(long nr_obiektu,unsigned char warstwa) override;
+	void SetLayer(long nr_obiektu,uint8_t warstwa) override;
 
 	//
 	//Podaje reserved danego obiektu
@@ -161,7 +140,7 @@ public:
 
 	//
 	//Zapisuje nowa wartosc reserved dla danego obiektu
-	void SetSelect(long nr_obiektu,unsigned char reserved) override;
+	void SetSelect(long nr_obiektu,uint8_t reserved) override;
 
 	//
 	//Zwraca 1 jezeli obiekt przechodci przez obszar zaznaczenia
@@ -197,7 +176,6 @@ public:
 
 	//zwraca ilosc objektow
 	size_t Size(void) override;
-
 
 	//
 	//Obiekty o identyfikatorze 0

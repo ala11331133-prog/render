@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClInclude Include="get_linie.hpp" />
     <ClInclude Include="irenderer_blend2d.hpp" />
+    <ClInclude Include="layer.hpp" />
     <ClInclude Include="line.h" />
     <ClInclude Include="obiekt_draw.h" />
     <ClInclude Include="test.hpp" />
