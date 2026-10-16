@@ -1,6 +1,7 @@
 #include "test.hpp"
 #include "irenderer_blend2d.hpp"
 #include <filesystem>
+#include <memory>
 #include "line.h"
 #include "get_linie.hpp"
 
@@ -95,4 +96,21 @@ TEST(rysuj_kreski)
 	ob[0]->Draw(blend, srodek_x, srodek_y, zoom, wi, he);
 
 	CHECK(!blend.Save("test2.png"));
+}
+
+TEST(zapisz_mape)
+{
+	std::vector<TLine> data;
+
+	GetMaxMinLineData(data, "linie.bin", 1, 800, 600, 0, 0);
+
+	std::unique_ptr<iobiekt_draw> ob = std::make_unique<TLineC>();
+
+	std::vector<uint8_t> bytes(data.size() * sizeof(TLine));
+	if (!bytes.empty()) std::memcpy(bytes.data(), data.data(), bytes.size());
+
+	CHECK(ob->LoadBytes(bytes) == data.size());
+
+	
+
 }

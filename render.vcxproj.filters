@@ -24,7 +24,7 @@
     <ClCompile Include="header.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="func.cpp">
+    <ClCompile Include="func.hpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="irenderer.hpp">

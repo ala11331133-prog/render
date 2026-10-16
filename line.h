@@ -174,6 +174,7 @@ public:
 	//zwraca ilosc bajtow jednego objektu
 	size_t ObSize(void) override;
 
+	//
 	//zwraca ilosc objektow
 	size_t Size(void) override;
 

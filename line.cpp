@@ -544,7 +544,6 @@ size_t TLineC::Size(void)
 	return Line.size();
 }
 
-
 TEST(test_make_line_0)
 {
 	TLineC line;

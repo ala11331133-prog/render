@@ -489,7 +489,10 @@ std::vector<uint8_t> GetObjectData(std::vector<iobiekt_draw*>& objects)
 TEST(GetObjectData_Empty)
 {
     CHECK(sizeof(FileHeader) == 4 + 4 + 4 + 8);
-    CHECK(sizeof(ObjectHeader) == 4 + 8 + 8);
+    auto aa = sizeof(ObjectHeader);
+
+    //10804 obecnie zawiera 256 warstw
+    CHECK(sizeof(ObjectHeader) == 4 + 8 + 8 + 32 + 4 + (4*2+2+32)*256);
     //tutaj trzeba wypelnic dane
     TLineC ob1;
 
@@ -533,7 +536,7 @@ TEST(GetObjectData_Empty)
 TEST(GetObjectData_elements)
 {
     CHECK(sizeof(FileHeader) == 4 + 4 + 4 + 8);
-    CHECK(sizeof(ObjectHeader) == 4 + 8 + 8);
+    CHECK(sizeof(ObjectHeader) == 4 + 8 + 8 + 32 + 4 + (4 * 2 + 2 + 32) * 256);
     //tutaj trzeba wypelnic dane
     TLineC ob1;
     ob1.Add(TLine{ 1, 2, 3, 4, 5, 0, 0 });

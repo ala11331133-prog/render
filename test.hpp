@@ -14,6 +14,17 @@ inline int g_TestErrors = 0;
     #define TEST_ENABLED 0
 #endif
 
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+#include <chrono>
+
+#ifdef _DEBUG
+    #define TEST_ENABLED 1
+#else
+    #define TEST_ENABLED 0
+#endif
+
 #define TEST_ABORT_ON_FAIL 1
 #define PRINT_ONLY_FAIL 0
 
@@ -94,3 +105,62 @@ struct TestResultsRunner
 };
 
 inline TestResultsRunner g_TestResultsRunner;
+
+#pragma once
+
+#if TEST_ENABLED == 1
+
+#define TEST(name) \
+    void name(); \
+    static bool _##name = (++g_TestCount, [&]() { \
+        auto start = std::chrono::steady_clock::now(); \
+        if constexpr (PRINT_ONLY_FAIL == 0) \
+            std::cout << "TEST: " << #name << ": "; \
+        name(); \
+        auto end = std::chrono::steady_clock::now(); \
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(); \
+        if constexpr (PRINT_ONLY_FAIL == 0) \
+            std::cout << "OK (" << ms << " ms)\n"; \
+        return true; \
+    }()); \
+    void name()
+
+#else
+
+#define TEST(name) \
+    void name()
+
+#endif
+//CHECK(x > 0);
+//CHECK(ptr != nullptr);
+//CHECK(sizeof(TLine) == 22); 
+
+#if TEST_ABORT_ON_FAIL == 1
+#define CHECK(condition) do { \
+        if (!(condition)) { \
+            std::cerr << "TEST FAILED: " \
+                      << #condition << std::endl \
+            << "[" << __FILE__ << ":" << __LINE__ << "]" \
+            << std::endl; \
+            std::abort(); \
+        } \
+    } while (0)
+#endif
+
+#if TEST_ABORT_ON_FAIL == 0
+#define CHECK(condition) \
+    do { \
+        if (!(condition)) { \
+            ++g_TestErrors; \
+            std::cerr << "FAILED: " << #condition << std::endl \
+            << "[" << __FILE__ << ":" << __LINE__ << "] " \
+            << "ERROR NOT"; \
+        } \
+    } while (0)
+#endif
+
+//CHECK_NEAR(line.x1, 10.5f, 0.001f);
+#define CHECK_NEAR(a, b, eps) CHECK(std::fabs((a) - (b)) <= (eps))
+#define CHECK_THROW(code) do { bool thrown = false; try { code; } catch (...) { thrown = true; } CHECK(thrown); } while (0)
+//CHECK_NOT_THROW(MojaFunkcja());
+#define CHECK_NOT_THROW(code) do { bool thrown = false; try { code; } catch (...) { thrown = true; } CHECK(!thrown); } while (0)

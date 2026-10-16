@@ -17,7 +17,10 @@ struct ObjectHeader
     uint64_t ob_count;
 
     //nazwa objektu
-    char name[16] = { 0 };
+    char name[32] = { 0 };
+
+    //suma kontrolna
+    uint32_t crc32 = 0;
 
     std::vector<uint8_t> SaveBytes() const
     {
@@ -37,7 +40,10 @@ struct ObjectHeader
 
         return true;
     }
+
+    Layer layer[256];
 };
+
 class FileHeader
 {
 public:

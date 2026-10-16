@@ -164,7 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="irenderer.hpp" />
-    <ClCompile Include="func.cpp" />
+    <ClCompile Include="func.hpp" />
     <ClCompile Include="header.hpp" />
     <ClCompile Include="irenderer_blend2d_test.cpp" />
     <ClCompile Include="line.cpp" />

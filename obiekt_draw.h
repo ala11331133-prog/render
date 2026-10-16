@@ -6,6 +6,7 @@
 #include <fstream>
 #include "irenderer.hpp"
 #include "layer.hpp"
+#include "func.hpp"
 
 #define M_PI 3.14159265358979323846
 
@@ -55,8 +56,7 @@ public:
 	virtual TMaxMinOb GetMaxMinWsp(void) = 0;
 	virtual std::vector<uint8_t> Get(size_t nr) = 0;
 	virtual bool Set(size_t nr, std::vector<uint8_t>& data) = 0;
-	virtual Layer GetLayerData(int nr) = 0;
-	virtual void SetLayerData(int nr, Layer) = 0;
+	virtual uint32_t GetCrc32() = 0;
 };
 
 //baza implementacyjna
@@ -254,12 +254,10 @@ public:
 	virtual size_t Size(void) = 0;
 
 	//
-	//pobiera warstwy
-	virtual Layer GetLayerData(int nr) { return layer[nr]; };
-
-	//ustawia warstwy
-	//
-	virtual void SetLayerData(int nr, Layer layer) { this->layer[nr] = layer; };
-
-	Layer layer[256];
+	//zwraca crc32
+	virtual uint32_t GetCrc32() override
+	{
+		const std::vector<uint8_t> bytes = SaveBytes();
+		return CRC32(bytes.data(), bytes.size());
+	}
 };
