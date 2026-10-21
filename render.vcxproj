@@ -163,19 +163,24 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="area.h" />
     <ClCompile Include="irenderer.hpp" />
     <ClCompile Include="func.hpp" />
     <ClCompile Include="header.hpp" />
     <ClCompile Include="irenderer_blend2d_test.cpp" />
     <ClCompile Include="line.cpp" />
+    <ClCompile Include="point.cpp" />
+    <ClCompile Include="area.cpp" />
     <ClCompile Include="render.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="floatpoint.h" />
     <ClInclude Include="get_linie.hpp" />
     <ClInclude Include="irenderer_blend2d.hpp" />
     <ClInclude Include="layer.hpp" />
     <ClInclude Include="line.h" />
     <ClInclude Include="obiekt_draw.h" />
+    <ClInclude Include="point.h" />
     <ClInclude Include="test.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

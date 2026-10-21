@@ -7,15 +7,9 @@
 #include "irenderer.hpp"
 #include "layer.hpp"
 #include "func.hpp"
+#include "floatpoint.h"
 
 #define M_PI 3.14159265358979323846
-
-
-struct FLOATPOINT
-{
-	float x;
-	float y;
-};
 
 //
 //Obiekt przechowuje wspolrzedne maxymalne i minimalne
@@ -28,6 +22,8 @@ enum class ObjectType : uint32_t
 {
 	None = 0,
 	Line = 1,
+	Point= 2,
+	Area = 3,
 };
 
 //interface (mozna tylko dodawac funkcje niezalezne od typu)
@@ -45,7 +41,7 @@ public:
 	virtual float Distance(long numer, float x3, float y3) = 0;
 	virtual void GetView(int szerokosc, int wysokosc, float& srodek_x, float& srodek_y, float& zoom, float margines_px) = 0;
 	virtual void Draw(IRenderer& render, float srodek_x, float srodek_y, float zoom, int szerokosc, int wysokosc, long warstwa = -1) = 0;
-	virtual void Sort(void) = 0;
+	virtual void Sort(std::int8_t SortMethod = 0) = 0;
 	virtual void Arytm(long obiekt, float dodaj, float razy = 1, long xy = 3, char zaznacz = 0) = 0;
 	virtual void Delete(long obiekt) = 0;
 	virtual void Deselect(void) = 0;
@@ -95,36 +91,41 @@ public:
 	//zwraca bajty do zapisu
 	virtual std::vector<uint8_t> SaveBytes()
 	{
-		static_assert(std::is_trivially_copyable_v<T>);
+		if constexpr (std::is_trivially_copyable_v<T>)
+		{
+			std::vector<T> data;
+			Save(data);
 
-		std::vector<T> data;
-		Save(data);
+			std::vector<uint8_t> bytes(data.size() * sizeof(T));
 
-		std::vector<uint8_t> bytes(data.size() * sizeof(T));
+			if (!bytes.empty())
+				std::memcpy(bytes.data(), data.data(), bytes.size());
 
-		if (!bytes.empty())
-			std::memcpy(bytes.data(), data.data(), bytes.size());
-
-		return bytes;
+			return bytes;
+		}
+		else
+			return {};
 	}
-
 	//
 	//Laduje z bajtow
 	virtual size_t LoadBytes(const std::vector<uint8_t>& bytes)
 	{
-		static_assert(std::is_trivially_copyable_v<T>);
+		if constexpr (std::is_trivially_copyable_v<T>)
+		{
+			if (bytes.size() % sizeof(T) != 0)
+				return 0;
 
-		if (bytes.size() % sizeof(T) != 0)
+			std::vector<T> data(bytes.size() / sizeof(T));
+
+			if (!bytes.empty())
+				std::memcpy(data.data(), bytes.data(), bytes.size());
+
+			return Load(data);
+		}
+		else
 			return 0;
+	}
 
-		std::vector<T> data(bytes.size() / sizeof(T));
-
-		if (!bytes.empty())
-			std::memcpy(data.data(), bytes.data(), bytes.size());
-
-		return Load(data);
-	}	
-	
 	//
 	//Oblicz odleglosc obiektu do punktu
 	virtual float Distance(long numer, float x3, float y3) = 0;
@@ -186,7 +187,7 @@ public:
 
 	//
 	//Sortowanie obiektu w celu optymalizacji wyswietlania
-	virtual void Sort(void) = 0;
+	virtual void Sort(std::int8_t SortMethod = 0) = 0;
 
 	//
 	//Operacje arytmetyczne dla dango obiektu

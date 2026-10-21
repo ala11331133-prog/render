@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include "floatpoint.h"
 
 struct RenderPixel
 {
@@ -48,9 +49,18 @@ public:
     virtual ~IRenderer() = default;
     virtual void SetImageSize(int w, int h, RenderPixel px) = 0;
 
-    virtual void SetLineSizeColour(int line_size, RenderPixel px) = 0;
+    virtual void SetSizeColour(int line_size, RenderPixel px) = 0;
+
+    virtual void Point(float x1, float y1) = 0;
 
     virtual void Line(float x1, float y1, float x2, float y2) = 0;
+
+    virtual void FilledPolygon(const std::vector<FLOATPOINT>& points,
+        RenderPixel outlineColor,
+        RenderPixel fillColor) = 0;
+
+
+    //virtual void Point(float x1, float y1) = 0;
 
     virtual void Text( float x, float y, float kat, const std::string& text) = 0;
 

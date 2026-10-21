@@ -205,12 +205,10 @@ size_t TLineC::Add(const std::vector<TLine>& data)
 	return Line.size();
 }
 
-
-
 //
 //Metoda do sortowania polaczen miedzy liniami
 //wywolywane tylko poprzez GenerujPol
-bool CompareLines(const TLine& a, const TLine& b)
+bool TLineC::CompareLines(const TLine& a, const TLine& b)
 {
 	if (a.x1 != b.x1)
 		return a.x1 < b.x1;
@@ -227,7 +225,7 @@ bool CompareLines(const TLine& a, const TLine& b)
 	return a.warstwa < b.warstwa;
 }
 
-bool CompareLinesLayer(const TLine& a, const TLine& b)
+bool TLineC::CompareLinesLayer(const TLine& a, const TLine& b)
 {
 	if (a.warstwa != b.warstwa)
 		return a.warstwa < b.warstwa;
@@ -244,12 +242,21 @@ bool CompareLinesLayer(const TLine& a, const TLine& b)
 	return a.y2 < b.y2;
 }
 
+bool TLineC::CompareLinesTextIndex(const TLine& a, const TLine& b)
+{
+	return a.TextIndex < b.TextIndex;
+}
+
 //
 //Sortowanie obiektu w celu optymalizacji wyswietlania
-void TLineC::Sort(void)
+void TLineC::Sort(std::int8_t SortMethod)
 {	
 	//TODO:: zdecydowac ktore lepsze i wywalic jedno
-	std::sort(Line.begin(), Line.end(), CompareLinesLayer);
+
+	if (SortMethod == 1) std::sort(Line.begin(), Line.end(), CompareLines);
+	else if (SortMethod == 2) std::sort(Line.begin(), Line.end(), CompareLinesTextIndex);
+	else std::sort(Line.begin(), Line.end(), CompareLinesLayer);
+	
 	//std::sort(Line.begin(), Line.end(), CompareLines);
 }
 
@@ -267,7 +274,7 @@ void TLineC::Arytm(long obiekt,float dodaj,float razy,long xy,char zaznacz)
 
 	//
 	//Jezeli zmiana jednego obiektu
-	if (obiekt>0)
+	if (obiekt >= 0)
 	{
 		if (xy&1)
 		{
@@ -291,7 +298,7 @@ void TLineC::Arytm(long obiekt,float dodaj,float razy,long xy,char zaznacz)
 	{
 		for (l=0;l<Line.size();l++)
 		{
-			if (zaznacz && !GetLayer(l)) continue;
+			if (zaznacz && !GetSelect(l)) continue;
 			if(xy&1)
 			{
 				Line[l].x1+=dodaj;
@@ -459,8 +466,22 @@ bool TLineC::IsIn(const TLine& line, float x1, float y1, float x2, float y2, boo
 
 
 //
-// Zwraca wszystkie obiekty, które przechodzą przez obszar zaznaczenia.
+//Zwraca 1 jezeli obiekt ma określony text_index
+//TODO: mozna najpier posortowac po text index
+std::vector<TLine> TLineC::GetTextIndex(std::uint32_t TextIndex)
+{
+	std::vector<TLine> ret;
+	for (const TLine& line : Line)
+	{
+		if (line.TextIndex == TextIndex)
+			ret.push_back(line);
+	}
+
+	return ret;
+}
+
 //
+// Zwraca wszystkie obiekty, które przechodzą przez obszar zaznaczenia
 std::vector<TLine> TLineC::GetCross(
 	float x1, float y1,
 	float x2, float y2)

@@ -10,7 +10,7 @@ TEST(draw_line)
 	BL2DRenderer blend(800, 600);
 	std::filesystem::remove("test.png");
 	CHECK(!std::filesystem::exists("test.png"));
-	blend.SetLineSizeColour(3, RenderPixel(255, 0, 0));
+	blend.SetSizeColour(3, RenderPixel(255, 0, 0));
 	blend.Line(0, 0, 800, 600);
 	blend.Line(100, 200, 30, 60);
 	blend.Save("test.png");
@@ -41,7 +41,7 @@ TEST(GetMaxMinLineData)
 	float move_y = (maxmin.miny + maxmin.maxy) / 2.0f;
 
 	BL2DRenderer blend(wi, he);
-	blend.SetLineSizeColour(1, RenderPixel(255, 0, 0));
+	blend.SetSizeColour(1, RenderPixel(255, 0, 0));
 
 	for (int ii = 0; ii < line.Size(); ii++)
 	{
@@ -91,7 +91,7 @@ TEST(rysuj_kreski)
 
 	BL2DRenderer blend(wi, he);
 
-	blend.SetLineSizeColour(1, RenderPixel(255, 0, 0));
+	blend.SetSizeColour(1, RenderPixel(255, 0, 0));
 
 	ob[0]->Draw(blend, srodek_x, srodek_y, zoom, wi, he);
 

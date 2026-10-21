@@ -23,7 +23,7 @@ public:
         ctx.fill_all(BLRgba32(0, 0, 0, 255));
     }
 
-    void SetLineSizeColour(int line_size, RenderPixel px) override
+    void SetSizeColour(int line_size, RenderPixel px) override
     {
         //BLImage image(800, 600, BL_FORMAT_PRGB32);
         //BLContext ctx(image);
@@ -35,7 +35,20 @@ public:
 
     void SetImageSize(int w, int h, RenderPixel background) override
     {
+        auto last_width = ctx.stroke_width();
+        BLVar style;
+        ctx.get_stroke_style(style);
+
+        BLRgba rgba;
+        style.to_rgba(&rgba);
+        RenderPixel pixel((uint8_t)(rgba.r * 255), (uint8_t)(rgba.g * 255), (uint8_t)(rgba.b * 255), (uint8_t)(rgba.a * 255));
+        ctx.end();
+
         image.create(w, h, BL_FORMAT_PRGB32);
+        ctx.begin(image);
+
+        SetSizeColour((int)last_width, pixel);
+
         BLRgba32 pom{0};
         pom.setR(background.R);
         pom.setG(background.G);
@@ -45,9 +58,41 @@ public:
         ctx.fill_all(pom);
     }
 
+    void Point(float x1, float y1) override
+    {
+        ctx.stroke_circle(x1, y1, ctx.stroke_width());
+    }
+
     void Line(float x1, float y1, float x2, float y2) override
     {
         ctx.stroke_line(BLPoint(x1, y1), BLPoint(x2, y2));
+    }
+
+    void FilledPolygon( const std::vector<FLOATPOINT>& points,
+                        RenderPixel outlineColor,
+                        RenderPixel fillColor) override
+    {
+        if (points.size() < 3) return;
+
+        BLPath path;
+        path.move_to(points[0].x, points[0].y);
+
+        for (size_t i = 1; i < points.size(); ++i)
+            path.line_to(points[i].x, points[i].y);
+
+
+        // Zamknij obszar, jeśli nie został zamknięty.
+        path.close();
+
+        // Wypełnienie obszaru.
+        ctx.set_fill_style( BLRgba32(fillColor.R, fillColor.G, fillColor.B, fillColor.A) );
+        ctx.fill_path(path);
+
+        // Obrys obszaru.
+        ctx.set_stroke_style( BLRgba32(outlineColor.R, outlineColor.G, 
+                              outlineColor.B, outlineColor.A)
+        );
+        ctx.stroke_path(path);
     }
 
     void Text(float x, float y, float kat,

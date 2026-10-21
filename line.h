@@ -1,4 +1,4 @@
-//
+﻿//
 //Klasa obslugujaca obiekty typu linie w plikach wektorowych
 //Dolaczona jako czasc skladowa klasy wektor
 //
@@ -106,9 +106,13 @@ public:
 	//Dodaje elementy
 	size_t Add(const std::vector<TLine>& data) override;
 
+	static bool CompareLinesLayer(const TLine& a, const TLine& b);
+	static bool CompareLines(const TLine& a, const TLine& b);
+	static bool CompareLinesTextIndex(const TLine& a, const TLine& b);
+
 	//
 	//Sortowanie obiektu w celu optymalizacji wyswietlania
-	void Sort(void) override;
+	void Sort(std::int8_t SortMethod = 0) override;
 
 	//
 	//Operacje arytmetyczne dla dango obiektu
@@ -154,6 +158,12 @@ public:
 	bool IsIn(const TLine& line, float x1, float y1, float x2, float y2, bool cross);
 
 	//
+	//Zwraca 1 jezeli obiekt ma określony text_index
+	//TODO: mozna najpier posortowac po text index
+	std::vector<TLine> GetTextIndex(std::uint32_t TextIndex);
+
+
+	//
 	//Zwraca 1 jezeli obiekt przechodci przez obszar zaznaczenia
 	std::vector<TLine> GetCross(float x1, float y1, float x2, float y2);
 
@@ -181,4 +191,6 @@ public:
 	//
 	//Obiekty o identyfikatorze 0
 	std::vector<TLine> Line;
+
+	private:
 };
