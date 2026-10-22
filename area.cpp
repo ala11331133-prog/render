@@ -29,6 +29,7 @@ int TAreaC::Equal(TArea a, TArea b)
 	if (a.warstwa != b.warstwa) return 0;
 	if (a.reserved != b.reserved) return 0;
 	if (a.TextIndex != b.TextIndex) return 0;
+	if (a.TextureIndex != b.TextureIndex) return 0;
 
 	if (a.Points.size() != b.Points.size()) return 0;
 
@@ -80,6 +81,7 @@ std::vector<uint8_t> TAreaC::Get(size_t nr)
 		sizeof(area.reserved) +
 		sizeof(area.TextIndex) +
 		sizeof(area.warstwa) +
+		sizeof(area.TextureIndex) +
 		sizeof(liczba_punktow) +
 		area.Points.size() * 2 * sizeof(float);
 
@@ -96,6 +98,7 @@ std::vector<uint8_t> TAreaC::Get(size_t nr)
 	Kopiuj(&area.reserved, sizeof(area.reserved));
 	Kopiuj(&area.TextIndex, sizeof(area.TextIndex));
 	Kopiuj(&area.warstwa, sizeof(area.warstwa));
+	Kopiuj(&area.TextureIndex, sizeof(area.TextureIndex));
 	Kopiuj(&liczba_punktow, sizeof(liczba_punktow));
 
 	for (const FLOATPOINT& punkt : area.Points)
@@ -120,6 +123,7 @@ bool TAreaC::Set(size_t nr, std::vector<uint8_t>& data)
 		sizeof(Area[nr].reserved) +
 		sizeof(Area[nr].TextIndex) +
 		sizeof(Area[nr].warstwa) +
+		sizeof(Area[nr].TextureIndex) +
 		sizeof(uint32_t))
 		return false;
 
@@ -134,6 +138,7 @@ bool TAreaC::Set(size_t nr, std::vector<uint8_t>& data)
 	Kopiuj(&area.reserved, sizeof(area.reserved));
 	Kopiuj(&area.TextIndex, sizeof(area.TextIndex));
 	Kopiuj(&area.warstwa, sizeof(area.warstwa));
+	Kopiuj(&area.TextureIndex, sizeof(area.TextureIndex));
 
 	uint32_t liczba_punktow = 0;
 	Kopiuj(&liczba_punktow, sizeof(liczba_punktow));

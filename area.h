@@ -16,14 +16,16 @@
 #pragma pack(push, 1)
 struct TArea
 {
-	TArea() : TArea(0, 0, 0, {}) {};
+	TArea() : TArea(0, 0, 0, {}, 0) {};
 	TArea(std::uint8_t reserved, std::int32_t TextIndex,
-		std::uint8_t warstwa, std::vector<FLOATPOINT> Points)
+		std::uint8_t warstwa, std::vector<FLOATPOINT> Points,
+		std::uint32_t TextureIndex)
 	{
 		this->reserved = reserved;
 		this->TextIndex = TextIndex;
 		this->warstwa = warstwa;
 		this->Points = Points;
+		this->TextureIndex = TextureIndex;
 	}
 	//
 		//Pole dodatkowe oznaczenia wartosci:
@@ -42,7 +44,12 @@ struct TArea
 	std::uint8_t warstwa;
 
 	std::vector<FLOATPOINT> Points;
+
+	//
+	//numer textury
+	std::uint32_t TextureIndex = 0;
 };
+
 #pragma pack(pop)
 
 //static_assert(sizeof(TArea) == 38);
